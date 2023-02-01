@@ -1,0 +1,5 @@
+{
+  "extends": "jsconfig/nextjs.json",
+  "include": ["**/*.js", "**/*.jsx"],
+  "exclude": ["node_modules"]
+}
