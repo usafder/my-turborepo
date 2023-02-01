@@ -1,2 +1,2 @@
 
-export const foo = () => console.log("hello world!")
+export const foo = () => console.log("Hello World!")
