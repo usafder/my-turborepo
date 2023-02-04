@@ -39,7 +39,7 @@ jobs:
         if: steps.turbo-cache.outputs.cache-hit != 'true'
         run: |
           echo "Deleting previously cached folder as cache hit missed..."
-          rm -rf $HOME/.cache/
+          rm -rf ./node_modules/.cache/turbo/
 
       - name: Install dependencies
         run: npm install
