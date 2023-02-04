@@ -41,6 +41,3 @@ jobs:
       - name: Build and Deploy
         id: build-and-deploy
         run: npm run deploy
-        
-      - name: Post Build and Deploy
-        run: echo ${{ steps.build-and-deploy.outputs }}
