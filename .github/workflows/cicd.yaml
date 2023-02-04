@@ -34,15 +34,13 @@ jobs:
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
             turbo-${{ github.job }}-${{ github.ref_name }}-
-            
-      - name: Delete Cache
-        if: ${{ steps.turbo-cache.outputs.cache-hit != 'true' }}
-        run: |
-          echo "Deleting previously cached folder as cache hit missed..."
-          rm -rf ./node_modules/.cache/turbo/
 
       - name: Install dependencies
         run: npm install
 
       - name: Build and Deploy
+        id: build-and-deploy
         run: npm run deploy
+        
+      - name: Post Build and Deploy
+        run: echo ${{ steps.build-and-deploy.outputs }}
