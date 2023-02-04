@@ -34,6 +34,12 @@ jobs:
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
             turbo-${{ github.job }}-${{ github.ref_name }}-
+            
+      - name: Delete Cache
+        if: steps.turbo-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Deleting previously cached folder as cache hit missed..."
+          rm -rf $HOME/.cache/
 
       - name: Install dependencies
         run: npm install
