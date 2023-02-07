@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - "**/apps/docs/**"
+      - apps/docs/**
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -28,25 +28,25 @@ jobs:
           node-version: 16
           cache: "npm"
 
-      - name: Turbo Cache
-        id: turbo-cache
-        uses: actions/cache@v3
-        with:
-          path: ./node_modules/.cache/turbo/
-          key: turbo-docs-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-docs-${{ github.job }}-${{ github.ref_name }}-
+#       - name: Turbo Cache
+#         id: turbo-cache
+#         uses: actions/cache@v3
+#         with:
+#           path: ./node_modules/.cache/turbo/
+#           key: turbo-docs-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+#           restore-keys: |
+#             turbo-docs-${{ github.job }}-${{ github.ref_name }}-
 
       - name: Install dependencies
         run: npm install
 
       - name: Build and Deploy
         id: build-and-deploy
-        run: npm run deploy --scope=docs
+        run: npm run deploy -- --filter=docs
 
-      - name: Clean up previous turbo cache if exists (docs)
-        run: |
-          file_count=$(find "./node_modules/.cache/turbo" -type f | wc -l)
-          if [ "$file_count" -gt 2 ]; then
-            find "./node_modules/.cache/turbo" -type f -printf '%T@ %p\n' | sort -n | head -n -2 | cut -f2- | xargs rm -f
-          fi
+#       - name: Clean up previous turbo cache if exists (docs)
+#         run: |
+#           file_count=$(find "./node_modules/.cache/turbo" -type f | wc -l)
+#           if [ "$file_count" -gt 2 ]; then
+#             find "./node_modules/.cache/turbo" -type f -printf '%T@ %p\n' | sort -n | head -n -2 | cut -f2- | xargs rm -f
+#           fi
