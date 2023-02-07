@@ -33,20 +33,22 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ./node_modules/.cache/turbo/
-          key: turbo-web-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            turbo-web-${{ github.job }}-${{ github.ref_name }}-
+            turbo-${{ github.job }}-${{ github.ref_name }}-
 
       - name: Install dependencies
         run: npm install
 
       - name: Build and Deploy
         id: build-and-deploy
-        run: npm run deploy --scope=web
+        run: npm run deploy -- --filter=web
 
       - name: Clean up previous turbo cache if exists (web)
+        shell: bash
         run: |
           file_count=$(find "./node_modules/.cache/turbo" -type f | wc -l)
           if [ "$file_count" -gt 2 ]; then
+            echo "Deleting previously cached output"
             find "./node_modules/.cache/turbo" -type f -printf '%T@ %p\n' | sort -n | head -n -2 | cut -f2- | xargs rm -f
           fi
