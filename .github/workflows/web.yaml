@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - "**/apps/web/**"
+      - apps/web/**
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
