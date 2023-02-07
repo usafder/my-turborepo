@@ -1,0 +1,52 @@
+name: Docs CICD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/docs/**
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build-docs-app:
+    name: Build and Deploy
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Turbo Cache
+        id: turbo-cache
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules/.cache/turbo/
+          key: turbo-docs-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-docs-${{ github.job }}-${{ github.ref_name }}-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and Deploy
+        id: build-and-deploy
+        run: npm run deploy --scope=docs
+        
+      - name: Clean up previous turbo cache if exists (docs)
+        run: |
+          file_count=$(find "./node_modules/.cache/turbo" -type f | wc -l)
+          if [ "$file_count" -gt 2 ]; then
+            find "./node_modules/.cache/turbo" -type f -printf '%T@ %p\n' | sort -n | head -n -2 | cut -f2- | xargs rm -f
+          fi
